@@ -1,0 +1,4 @@
+Your identification has been saved in /c/Documents and Settings/Administrator/.ssh/id_rsa.
+Your public key has been saved in /c/Documents and Settings/Administrator/.ssh/id_rsa.pub.
+The key fingerprint is:
+f3:93:23:45:a5:42:22:96:5e:b8:b6:27:7c:83:b1:e5 yidianfengfan@gmail.com
