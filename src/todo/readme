@@ -1,0 +1,11 @@
+开始页面：http://localhost:8080/todo
+给列表添加新项目：http://localhost:8080/new
+编辑项目的页面：http://localhost:8080/edit/:no
+
+import sqlite3
+con = sqlite3.connect('todo.db') # 警告：该文件被创建在当前目录下
+con.execute("CREATE TABLE todo (id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL)")
+con.execute("INSERT INTO todo (task,status) VALUES ('阅读 A-byte-of-python 以获得一个有关 Python 的很好介绍',0)")
+con.execute("INSERT INTO todo (task,status) VALUES (u'访问 Python 网站',1)")
+con.execute("INSERT INTO todo (task,status) VALUES ('测试各种各样的编辑器，并检查语法高亮',1)")
+con.execute("INSERT INTO todo (task,status) VALUES ('选择你最喜欢的 WSGI 框架',0)")

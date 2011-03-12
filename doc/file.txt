@@ -1,0 +1,238 @@
+#open返回一个文件类
+infile = open("file_name", "r, w, a, r+") #b
+ 
+#读整个文件内容到 file_content#read(4)
+file_content = infile.read() 
+ 
+#读取所有行，存为list(列表)
+infile.seek(0)
+file_content_list = infile.readlines()
+
+infile.write("ddd");
+#函数writelines可以将list写入到文件中，但是不会在list每个元素后加换行符，所以如果想每行都有换行符的话需要自己再加上。
+sample_list = [line+'\n' for line in sample_list]
+outfile.wirtelines(sample_list)
+
+struct.unpack(type, value) and struct.pack(type, value)
+##############read ini
+from ConfigParser import SafeConfigParser
+from StringIO import StringIO
+ 
+f = StringIO()
+scp = SafeConfigParser()
+ 
+print '-'*20, ' following is write ini file part ', '-'*20
+sections = ['s1','s2']
+for s in sections:
+    scp.add_section(s)
+    scp.set(s,'option1','value1')
+    scp.set(s,'option2','value2')
+ 
+scp.write(f)
+print f.getvalue()
+ 
+print '-'*20, ' following is read ini file part ', '-'*20
+f.seek(0)
+scp2 = SafeConfigParser()
+scp2.readfp(f)
+sections = scp2.sections()
+for s in sections:
+    options = scp2.options(s)
+    for option in options:
+        value = scp2.get(s,option)
+        print "section: %s, option: %s, value: %s" % (s,option,value)
+
+
+###########xls
+import xlrd
+ 
+fname = "sample.xls"
+bk = xlrd.open_workbook(fname)
+shxrange = range(bk.nsheets)
+try:
+    sh = bk.sheet_by_name("Sheet1")
+except:
+    print "no sheet in %s named Sheet1" % fname
+    return None
+nrows = sh.nrows
+ncols = sh.ncols
+print "nrows %d, ncols %d" % (nrows,ncols)
+ 
+cell_value = sh.cell_value(1,1)
+print cell_value
+ 
+row_list = []
+for i in range(1,nrows):
+    row_data = sh.row_values(i)
+    row_list.append(row_data)
+
+
+##############sqlite3
+#!/depot/Python-2.5/bin/python
+import sqlite3
+ 
+#链接数据库文件
+#如果数据库文件不存在，回新建一个，如果存在则打开此文件
+conn = sqlite3.connect('example')
+ 
+c = conn.cursor()
+ 
+#创建表格
+c.execute('''create table stocks (date text, trans text, symbol text,  qty real, price real)''')
+ 
+# 插入数据，执行SQL语句
+c.execute("""insert into stocks
+          values ('2006-01-15','BUoY','RHATd',100,35.14)""")  
+ 
+#将变动保存到数据库文件，如果没有执行词语句，则前面的insert 语句操作不会被保存
+conn.commit()
+ 
+#得到所有的记录
+rec = c.execute('''select * from stocks''')
+print c.fetchall()
+
+
+##########read ip 
+#!/usr/bin/python
+ 
+from struct import *
+import string
+ 
+def ip2string( ip ):
+    a = (ip & 0xff000000) >> 24
+    b = (ip & 0x00ff0000) >> 16
+    c = (ip & 0x0000ff00) >> 8
+    d = ip & 0x000000ff
+    return "%d.%d.%d.%d" % (a,b,c,d)
+ 
+def string2ip( str ):
+    ss = string.split(str, '.');
+    ip = 0L
+    for s in ss: ip = (ip << 8) + string.atoi(s)
+    return ip;
+ 
+class IpLocater :
+    def __init__( self, ipdb_file ):
+        self.ipdb = open( ipdb_file, "rb" )
+        # get index address 
+        str = self.ipdb.read( 8 )
+        (self.first_index,self.last_index) = unpack('II',str)
+        self.index_count = (self.last_index - self.first_index) / 7 + 1
+ 
+    def getString(self,offset = 0):
+        if offset :
+            self.ipdb.seek( offset )
+        str = ""
+        ch = self.ipdb.read( 1 )
+        (byte,) = unpack('B',ch)
+        while byte != 0:
+            str = str + ch
+            ch = self.ipdb.read( 1 )
+            (byte,) = unpack('B',ch) 
+        return str
+ 
+    def getLong3(self,offset = 0):
+        if offset :
+            self.ipdb.seek( offset )
+        str = self.ipdb.read(3)
+        (a,b) = unpack('HB',str)
+        return (b << 16) + a
+ 
+    def getAreaAddr(self,offset=0):
+        if offset :
+            self.ipdb.seek( offset )
+        str = self.ipdb.read( 1 )
+        (byte,) = unpack('B',str)
+        if byte == 0x01 or byte == 0x02:
+            p = self.getLong3()
+            if p:
+                return self.getString( p )
+            else:
+                return ""
+        else:
+            return self.getString( offset )
+ 
+    def getAddr(self,offset ,ip = 0):
+        self.ipdb.seek( offset + 4)
+ 
+        countryAddr = ""
+        areaAddr = ""
+        str = self.ipdb.read( 1 )
+        (byte,) = unpack('B',str)
+        if byte == 0x01:
+            countryOffset = self.getLong3()
+            self.ipdb.seek(countryOffset )
+            str = self.ipdb.read( 1 )
+            (b,) = unpack('B',str)
+            if b == 0x02:
+                countryAddr = self.getString( self.getLong3() )
+                self.ipdb.seek( countryOffset + 4 )
+            else:
+                countryAddr = self.getString( countryOffset )
+            areaAddr = self.getAreaAddr()
+        elif byte == 0x02:
+            countryAddr = self.getString( self.getLong3() )
+            areaAddr = self.getAreaAddr( offset + 8 )
+        else:
+            countryAddr = self.getString( offset + 4 )
+            areaAddr = self.getAreaAddr( )
+ 
+        return countryAddr + "/" + areaAddr
+ 
+    def output(self, first ,last ):
+        if last > self.index_count :
+            last = self.index_count
+        for index in range(first,last):
+            offset = self.first_index + index * 7
+            self.ipdb.seek( offset )
+            buf = self.ipdb.read( 7 )
+            (ip,of1,of2) = unpack("IHB",buf)
+            print "%s - %s" % (ip, self.getAddr( of1 + (of2 << 16) ) )
+ 
+    def find(self,ip,left,right):
+        if right-left == 1:
+            return left
+        else:
+            middle = ( left + right ) / 2
+            offset = self.first_index + middle * 7
+            self.ipdb.seek( offset )
+            buf = self.ipdb.read( 4 )
+            (new_ip,) = unpack("I",buf)
+            if ip <= new_ip :
+                return self.find( ip, left, middle )
+            else:
+                return self.find( ip, middle, right )
+ 
+    def getIpAddr(self,ip):
+        index = self.find( ip,0,self.index_count - 1 )
+        ioffset = self.first_index + index * 7
+        aoffset = self.getLong3( ioffset + 4)
+        address = self.getAddr( aoffset )
+        return address                
+ 
+if __name__ == "__main__" :
+    ip_locater = IpLocater( "QQWry.Dat" )
+    ip_locater.output( 100, 120 )
+    ip = '59.64.234.174'
+    ip = '58.38.139.229'
+    address = ip_locater.getIpAddr( string2ip( ip ) )
+    print "the ip %s come from %s" % (ip,address)
+
+###zipfile
+import zipfile
+ 
+z = zipfile.ZipFile("zipfile.zip", "r")
+ 
+#打印zip文件中的文件列表
+for filename in z.namelist(  ):
+    print 'File:', filename
+ 
+#读取zip文件中的第一个文件
+first_file_name = z.namelist()[0]
+content = z.read(first_file_name)
+print first_file_name
+print content
+
+z = zipfile.ZipFile('test.zip', 'w', zipfile.ZIP_DEFLATED)
+z.write('test.html')
+z.close( ) 

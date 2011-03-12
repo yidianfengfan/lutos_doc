@@ -1,0 +1,103 @@
+%rebase trielayout title='Content Title'
+<br/>
+<div id="msg" style="display:none;color:red;"></div>
+word:<input name='word' id='word' /><br/>
+<hr/>
+<input id='check' type='button' value='判断'/>
+<input id='add' type='button' value='增加'/> 
+<input id='remove' type='button' value='删除'/>
+<hr/>
+<textarea id="info" cols='50' rows='10'></textarea>
+<input id='black' type='button' value='测试黑名单'/>
+<div id="blackInfo" style="display:none;"></div>
+<script>
+	jQuery(function(){
+		jQuery("#add").click(addFun);
+		jQuery("#check").click(checkFun);
+		jQuery("#remove").click(removeFun);
+		jQuery("#black").click(blackFun);
+	});
+	
+	function showMessage(msg){
+		jQuery("#msg").html(msg);
+		jQuery("#msg").show();
+		setTimeout("jQuery('#msg').hide();",1000);
+	}
+	
+	function checkFun(){
+		jQuery.ajax({
+			url: '/check',
+			data: {'word': jQuery("#word").val()},
+			dataType: 'json',
+			async: false,
+			success: function(data, textStatus, jqXHR){
+				if(data.success){
+					showMessage("存在");
+				}else{
+					showMessage("不存在");
+				}
+			},error: function(jqXHR, textStatus, errorThrown){
+				showMessage("检测失败" + errorThrown);
+			}
+		});
+	}
+	
+	function addFun(){
+		jQuery.ajax({
+			url: '/add',
+			data: {'word': jQuery("#word").val()},
+			dataType: 'json',
+			async: false,
+			success: function(data, textStatus, jqXHR){
+				if(data.success){
+					showMessage("增加成功");
+				}else{
+					showMessage("增加失败");
+				}
+			},error: function(jqXHR, textStatus, errorThrown){
+				showMessage("增加失败" + errorThrown);
+			}
+		});
+	}
+	
+	function removeFun(){
+		jQuery.ajax({
+			url: '/remove',
+			data: {'word': jQuery("#word").val()},
+			dataType: 'json',
+			async: false,
+			success: function(data, textStatus, jqXHR){
+				if(data.success){
+					showMessage("删除成功");
+				}else{
+					showMessage("删除失败");
+				}
+			},error: function(jqXHR, textStatus, errorThrown){
+				showMessage("删除失败" + errorThrown);
+			}
+		});
+	}
+	
+	function blackFun(){
+		jQuery.ajax({
+			type: 'POST',
+			url: '/black',
+			data: {'word': jQuery("#info").val()},
+			dataType: 'json',
+			async: false,
+			success: function(data, textStatus, jqXHR){
+				if(data.success){
+					jQuery("#blackInfo").html(data.msg);
+					jQuery("#blackInfo").show();
+				}else{
+					jQuery("#blackInfo").html(data.msg);
+					jQuery("#blackInfo").show();
+				}
+			},error: function(jqXHR, textStatus, errorThrown){
+				jQuery("#blackInfo").html("error:" + errorThrown);
+				jQuery("#blackInfo").show();
+			}
+		});
+	}
+	
+</script>

@@ -1,0 +1,104 @@
+#########http
+一个完整的请求消息包括：一个请求行、若干消息头、以及实体内容。
+一个完整的响应消息包括：一个状态行、若干消息头、以及实体内容。 
+
+urlencode
+st = u'帝国'
+st = st.encode('gb2312')
+m = {'par':st,}
+s = urllib.urlencode(m)
+print s
+
+>>> import urllib
+>>> a = "帝国"
+>>> a
+'\xb5\xdb\xb9\xfa'
+>>> urllib.quote(a)
+'%B5%DB%B9%FA'
+
+#####email, poplib , smtplib
+# -*- coding=GBK -*-
+ 
+import string
+import poplib
+import StringIO, rfc822
+ 
+servername = "pop3.126.com"
+username = "username here"
+passwd = "password here"
+ 
+#连接 登录 服务器
+pop = poplib.POP3(servername)
+pop.set_debuglevel(1)            #会打印出debug信息
+pop.user(username)
+pop.pass_(passwd)
+ 
+#列出邮件信息
+num,total_size = pop.stat()
+ 
+#取得最新的邮件
+hdr,text,octet=pop.retr(num)
+ 
+#对邮件进行操作
+text = string.join(text, "\n")
+file = StringIO.StringIO(text)
+ 
+message = rfc822.Message(file)
+ 
+for k, v in message.items():
+    print k, "=", v
+ 
+print message.fp.read()
+
+
+import smtplib
+import email.MIMEMultipart
+import email.MIMEText
+import email.MIMEBase
+import os.path
+ 
+From = "sender address"
+To = "recipients"
+file_name = "file name"
+ 
+server = smtplib.SMTP("smtp server address")
+server.login("username","password") #仅smtp服务器需要验证时
+ 
+# 构造MIMEMultipart对象做为根容器
+main_msg = email.MIMEMultipart.MIMEMultipart()
+ 
+# 构造MIMEText对象做为邮件显示内容并附加到根容器
+text_msg = email.MIMEText.MIMEText("this is a test text to text mime")
+main_msg.attach(text_msg)
+ 
+# 构造MIMEBase对象做为文件附件内容并附加到根容器
+contype = 'application/octet-stream'
+maintype, subtype = contype.split('/', 1)
+ 
+## 读入文件内容并格式化
+data = open(file_name, 'rb')
+file_msg = email.MIMEBase.MIMEBase(maintype, subtype)
+file_msg.set_payload(data.read( ))
+data.close( )
+email.Encoders.encode_base64(file_msg)
+ 
+## 设置附件头
+basename = os.path.basename(file_name)
+file_msg.add_header('Content-Disposition',
+ 'attachment', filename = basename)
+main_msg.attach(file_msg)
+ 
+# 设置根容器属性
+main_msg['From'] = From
+main_msg['To'] = To
+main_msg['Subject'] = "attach test "
+main_msg['Date'] = email.Utils.formatdate( )
+ 
+# 得到格式化后的完整文本
+fullText = main_msg.as_string( )
+ 
+# 用smtp发送邮件
+try:
+    server.sendmail(From, To, fullText)
+finally:
+    server.quit()
