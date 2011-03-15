@@ -1,0 +1,56 @@
+假设 Alice 在一部机器上自己的个人目录中创建了一个项目 /home/alice/project, Bob 想在同一部机器自己的个人目录中为这个项目做点什么。
+
+Bob 首先这样开始：
+
+$ git-clone /home/alice/project myrepo
+
+这样就创建了一个保存着 Alice 的版本库的镜像的新目录 "myrepo"。这个镜像保存着原始项目的起点和它的发展历程。
+
+接着 Bob 对项目做了些更改并提交了这些更改：
+
+(编辑一些文件)
+
+$ git-commit -a 
+
+(如果需要的话再重复这个步骤)
+
+当他搞定之后，他告诉 Alice 将他的东西从 /home/bob/myrepo 中引入，她只需要这样：
+
+$ cd /home/alice/project
+$ git pull /home/bob/myrepo
+
+这样就将 Bob 的版本库中的 "master" 分支的变化引入了。 Alice 也可以通过在 pull 命令的后面加入参数的方式来引入其他的分支。
+
+在导入了 Bob 的工作之后，用 "git-whatchanged" 命令可以查看有什么信的提交对象。如果这段时间里以来，Alice 也对项目做过自己的修改，当 Bob 的修改被合并进来的时候，那么她需要手动修复所有的合并冲突。
+
+谨慎的 Alice 在导入 Bob 的工作之前，希望先检查一下。那么她可以先将 Bob 的工作导入到一个新创建的临时分支中，以方便研究 Bob 的工作：
+
+$ git fetch /home/bob/myrepo master:bob-incoming
+
+这个命令将 Bob 的 master 分支的导入到名为 bob-incoming 的分支中（不同于 git-pull 命令，git-fetch 命令只是取得 Bob 的开发工作的拷贝，而不是合并经来）。接着：
+
+$ git whatchanged -p master..bob-incoming
+
+这会列出 Bob 自取得 Alice 的 master 分支之后开始工作的所有变化。检查过这些工作，并做过必须的调整之后， Alice 就可以将变化导入到她的 master 分支中：
+
+$ git-checkout master
+$git-pull . bob-incoming
+
+最后的命令就是将 "bob-incoming" 分支的东西导入到 Alice 自己的版本库中的，稍后，Bob 就可以通过下面的命令同步 Alice 的最新变化。
+
+$ git-pull
+
+注意不需为这个命令加入 Alice 的版本库的路径，因为当 Bob 克隆 Alice 的版本库的时候， git 已经将这个路径保存到 .git/remote/origin 文件中，它将会是所以的导入操作的默认路径。
+
+Bob 可能已经注意到他并没有在他的版本库中创建过分支（但是分支已经存在了）：
+
+$ git branch
+* master
+  origin
+
+"origin" 分支，它是运行 "git-clone" 的时候自动创建的，他是 Alice 的 master 分支的原始镜像， Bob 应该永远不要向这个分支提交任何东西。
+
+如果 Bob 以后决定在另外一部主机上开展工作，那么他仍然需要通过 SSH 协议从新克隆和导入（ Alice 的版本库）：
+
+$ git-clone alice.org:/home/alice/project/ myrepo
+
