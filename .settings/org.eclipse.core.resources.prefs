@@ -1,4 +1,4 @@
-#Sun Mar 13 10:57:48 GMT 2011
+#Thu Mar 17 14:50:45 CST 2011
 eclipse.preferences.version=1
 encoding//src/TriTree.py=utf-8
 encoding//src/Trie.py=utf-8
@@ -24,6 +24,10 @@ encoding//src/exanples/unread.py=gbk
 encoding//src/exanples/updateProfileImage.py=gbk
 encoding//src/exanples/upload.py=gbk
 encoding//src/hello_template.tpl=UTF-8
+encoding//src/image/pymongo/Config.py=utf-8
+encoding//src/image/pymongo/MongoManager.py=utf-8
+encoding//src/image/pymongo/cut/CheckOut.py=utf-8
+encoding//src/image/pymongo/cut/Cut.py=utf-8
 encoding//src/imsto/app/_config.py=utf-8
 encoding//src/imsto/app/imagehandle.py=utf-8
 encoding//src/imsto/app/managehandle.py=utf-8
