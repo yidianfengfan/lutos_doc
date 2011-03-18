@@ -5,9 +5,9 @@ Created on 2011-3-17
 @author: leishouguo
 '''
 from image.pymongo.MongoManager import MongoManger
+from image.pymongo.cut import CheckOut
 from subprocess import CalledProcessError
 import os.path
-from image.pymongo.cut import CheckOut
 
 THUMB_ROOT = "/home/leishouguo/image"
 
@@ -66,6 +66,16 @@ def identify_shell(imagefile):
     except CalledProcessError, e:
         print (e)
         return None
+    
+def thumbnail_wand(filename, size_x, distname):
+    size = size_x, size_x
+    from magickwand.image import Image
+    im = Image(filename)
+    if im.size > size:
+        im.thumbnail(size_x)
+    im.save(distname)
+    del im
+    
         
 if __name__ == '__main__':
     

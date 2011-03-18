@@ -5,8 +5,10 @@ k加
 @author: leishouguo
 '''
 from image.pymongo import ImageUtil
-import re
+from pymongo import DESCENDING, ASCENDING
 import Config
+import datetime
+import re
 config = Config.Config()
 
 class MongoManger(object):
@@ -38,6 +40,12 @@ class MongoManger(object):
             self.db = self.getDb(server, port,  dbName)
         cn = '{0}.files'.format(tableName)
         return self.db[cn]
+    
+    def getTableByName(self, server, port,  dbName, tableName):
+        if self.db is None:
+            self.db = self.getDb(server, port,  dbName)
+        return self.db[tableName]
+    
     
     def close(self):
         if(self.db is not None):
@@ -118,5 +126,36 @@ if __name__ == '__main__':
     
     print mongoManager.browse(10, 0)
     
+    posts = mongoManager.getTableByName(config.get("mongo.server"), int(config.get("mongo.port")), config.get("mongo.database"), "posts")
     
+    post = [{"author": "Mike",
+         "text": "My first blog post!",
+         "tags": ["mongodb", "python", "pymongo"],
+         "date": datetime.datetime.utcnow()},{"author": "shguo",
+         "text": "My first blog post!",
+         "tags": ["mongodb", "python", "pymongo"],
+         "date": datetime.datetime.utcnow()}]
+   
+    #print posts.insert(post)
     
+    print posts.find_one()
+
+    print posts.find_one({"author": "Mike"})
+
+    print posts.count()
+    
+    print posts.find({"author": "Mike"}).count()
+    
+    d = datetime.datetime(2009, 11, 12, 12)
+    for post in posts.find({"date": {"$gt": d}}).sort("author"):
+        print post
+        
+    posts.create_index([("date", DESCENDING), ("author", ASCENDING)])
+
+    print posts.find({"date": {"$lt": d}}).sort("author").explain()["cursor"]
+    #u'BasicCursor' if use index may show: u'BtreeCursor date_-1_author_1'
+
+    print posts.find({"date": {"$lt": d}}).sort("author").explain()["nscanned"]
+    #3
+
+
