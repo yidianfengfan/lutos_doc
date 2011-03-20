@@ -1,7 +1,7 @@
 #encoding: utf-8
 '''
 Created on 2011-3-17
-k加
+k
 @author: leishouguo
 '''
 from image.pymongo import ImageUtil
@@ -56,8 +56,8 @@ class MongoManger(object):
     def store(self, file, name):
         if not hasattr(file, 'read'):
             raise TypeError("file object error")
-       
         data = file.read()
+        print len(data)
         return self.storeByte(data, name)
     
     def storeByte(self, data, name):
@@ -67,7 +67,7 @@ class MongoManger(object):
         ext = ImageUtil.getImageType(data[:32])
         if ext is None:
             return [False, "invalid image file"]
-        print len(data)
+       
         id = ImageUtil.makeId(data)
         print ('id: {0}'.format(id))
         fs = self.getFs(config.get("mongo.server"), int(config.get("mongo.port")), config.get("mongo.database"), config.get("mongo.collection"))
@@ -115,11 +115,17 @@ class MongoManger(object):
         return newItem
     
 if __name__ == '__main__':
+    
+    imgFile = "/usr/local/src/linux-soft/image/s290x360_mLbmkJbmiLcozLcG.jpg"
+    import platform
+    if platform.platform()[:3] == "Win":
+        imgFile = "D:\\temp\\s290x360_x8zJITALH8ALX8z5.jpg"
+    
     mongoManager = MongoManger()
     fs = mongoManager.getFs(config.get("mongo.server"), int(config.get("mongo.port")), config.get("mongo.database"), config.get("mongo.collection"))
     print fs
     
-    data = mongoManager.store(file("/usr/local/src/linux-soft/image/s290x360_mLbmkJbmiLcozLcG.jpg"), "s290x360_mLbmkJbmiLcozLcG.jpg")
+    data = mongoManager.store(file(imgFile, "rb"), "s290x360_mLbmkJbmiLcozLcG.jpg")
     print data
     
     print mongoManager.get("ed298kgybcccr6e5rmck67o61")
@@ -149,9 +155,11 @@ if __name__ == '__main__':
     d = datetime.datetime(2009, 11, 12, 12)
     for post in posts.find({"date": {"$gt": d}}).sort("author"):
         print post
-        
+    
+    posts.drop_index([("date", DESCENDING), ("author", ASCENDING)])
+    print posts.find({"date": {"$lt": d}}).sort("author").explain()["cursor"]
+         
     posts.create_index([("date", DESCENDING), ("author", ASCENDING)])
-
     print posts.find({"date": {"$lt": d}}).sort("author").explain()["cursor"]
     #u'BasicCursor' if use index may show: u'BtreeCursor date_-1_author_1'
 
