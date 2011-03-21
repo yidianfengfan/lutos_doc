@@ -49,7 +49,7 @@ class MongoManger(object):
     
     def close(self):
         if(self.db is not None):
-            self.db.collection.close()
+            self.db.close()
             
             
         
