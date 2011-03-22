@@ -1,4 +1,4 @@
-#Fri Mar 18 15:01:22 GMT 2011
+#Tue Mar 22 16:18:54 CST 2011
 eclipse.preferences.version=1
 encoding//src/TriTree.py=utf-8
 encoding//src/Trie.py=utf-8
@@ -36,6 +36,7 @@ encoding//src/imsto/app/mongoHandle.py=utf-8
 encoding//src/imsto/app/store.py=utf-8
 encoding//src/imsto/app/tool.py=utf-8
 encoding//src/layout.tpl=UTF-8
+encoding//src/pomDown.py=utf-8
 encoding//src/todo=UTF-8
 encoding//src/todo/todo.py=utf-8
 encoding//src/urldown.py=utf-8
