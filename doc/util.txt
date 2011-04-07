@@ -362,4 +362,67 @@ if in file set coding='utf8', should do  a.decode('utf8')
 主要看文件的编码,用bottle向后台传递时, a.decode('gbk').
 urllib.urlencode(params)
 
+====常见问题：
+一、带有默认参数的函数
+在编写带有默认参数的函数时经常会这样子：
+def func(param=[]):
+pass
+这是错误的。函数的默认参数应该是一个不可变的对象。
+def func(param=None):
+if param is None:
+param=[]
+pass
+
+二、带有初始值的类的属性
+为了让对象具有一个属性，经常是通过__init__()函数，比如：
+class Fish:
+def __init__(self):
+self.name=”鱼”
+
+但是这样子阅读源代码可能不大方便。还可以这样子：
+class Fish:
+name=”鱼”
+不过需要注意的是，初始值应该是一个不可变的对象。这样子是错的：
+class Fish:
+books=[]
+
+而应该是这样子：
+class Fish:
+books=None #这行可有可无
+def __init__(self):
+self.books=[]
+
+三、只有一个元素的tuple的写法是：
+(1, ) =>这是只有一个元素的元组
+(1) =>整数1
+
+四、在迭代中不能修改列表，所以要将列表复制一份：
+#错误的写法
+for e in l:
+self.process(e) #在process()内删除了或者添加了l的元素
+#正确的写法，复制一份l:
+for e in l[:]:
+self.process(e) #在process()内删除了或者添加了l的元素
+
+五、列表的乘法:
+range(10)*10 =>一个100个元素的列表，使用起来没问题
+[a,b,c,d,e]*10 =>一个50个元素的列表，只是，如果a,b,c,d,e这五个变量里mutable对象，比如list,set类型的话，当你做以下操作:
+a=[]
+l=[a,1,2,3,4]*2
+l[0].append(1)
+你会惊奇地发现
+l[0],l[5]都变成了[1]
+
+六、捕获多个异常：
+try:
+io.open(filename,”wb”).write(b”haha”)
+except (IOError, OSError):
+pass
+我自己经常搞错，呵呵。不能写成：
+try:
+io.open(filename, “wb”).write(b”haha”)
+except IOError, OSError:
+pass
+这种写法在py2.6里面是指捕获IOError类型的异常，并赋值给OSError这个变量。
+
 
