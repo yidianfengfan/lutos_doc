@@ -15,7 +15,7 @@ a = ";".join(["%s=%s" % (k, v) for k, v in {'a':'a','b':'b','c':'c'}.items()])
 if __name__ == "__main__":
 	test_info()
 
-type, str, dir
+type, str, dir,  isinstance("sdf", str), a is b, a==b
 callable 函数，它接收任何对象作为参数，如果参数对象是可调用的那么返回 True，否则返回 False。可调用对象包括函数、类方法，甚至类自身
 li = ["Larry", "Curly"]
 getattr(li, "append")("Moe") 
