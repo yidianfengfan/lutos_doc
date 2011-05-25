@@ -1,0 +1,9 @@
+/blog.py
+/schema.sql
+/templates:
+    /templates/view.html
+    /templates/new.html
+    /templates/base.html
+    /templates/index.html
+    /templates/edit.html
+/model.py
