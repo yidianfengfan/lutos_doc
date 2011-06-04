@@ -1,4 +1,36 @@
 现在python2.6新增了一个特性，只要把环境变量“PYTHONDONTWRITEBYTECODE”设置为“x”，就不再会生成.pyc文件了。在windows下修改环境变量的方法是：右键点击“我的电脑” ->属性->高级->环境变量。在Linux下可以修改~/.profile。
+str[0:19]
+#Python格式化日期时间的函数为datetime.datetime.strftime()；由字符串转为日期型的函数为：datetime.datetime.strptime()
+print time.strftime('%Y-%m-%d',time.localtime(time.time()))
+c = threading.RLock()
+def f():
+    with c:
+        datetime.datetime.strptime("20100101","%Y%m%d")
+        
+comment.date=datetime.strptime(commentdate,"%Y-%m-%d %H:%M:%S")        
+当前时间戳：time.time()
+当前日期：time.ctime()
+1、Python下日期到时间戳的转换
+import datetime
+import time
+dateC=datetime.datetime(2010,6,6,8,14,59)
+timestamp=time.mktime(dateC.timetuple())
+print timestamp
+2、Python下将时间戳转换到日期
+import datetime
+import time
+ltime=time.localtime(1237515355.0)
+timeStr=time.strftime("%Y-%m-%d %H:%M:%S", ltime)
+print timeStr
+
+ISOTIMEFORMAT=’%Y-%m-%d %X’
+time.strptime( s, ISOTIMEFORMAT )
+time.strftime( ISOTIMEFORMAT, time.localtime() )
+time.mktime执行与gmtime(), localtime()相反的操作，它接收struct_time对象作为参数，返回用秒数来表示时间的浮点数
+time.gmtime([sec])，可选的参数sec表示从1970-1-1以来的秒数。其默认值为 time.time()，函数返回time.struct_time类型的对象。time.localtime
+
+
+
 
 filter  [e for e in li if odd(e)]
 map     [double(n) for n in li]
