@@ -1,4 +1,4 @@
-#Fri Jun 03 15:37:22 CST 2011
+#Wed Jun 22 17:26:35 CST 2011
 eclipse.preferences.version=1
 encoding//doc/file.txt=GBK
 encoding//doc/util.txt=GBK
@@ -45,6 +45,9 @@ encoding//src/layout.tpl=UTF-8
 encoding//src/pomDown.py=utf-8
 encoding//src/shguo/redis/RedisTest.py=utf-8
 encoding//src/shguo/redis/redisTest.py=utf-8
+encoding//src/shguo/thread_test.py=utf-8
+encoding//src/shguo/urllib_test.py=utf-8
+encoding//src/shguo/util/t.py=utf-8
 encoding//src/todo=UTF-8
 encoding//src/todo/todo.py=utf-8
 encoding//src/urldown.py=utf-8
