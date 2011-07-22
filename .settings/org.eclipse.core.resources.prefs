@@ -1,4 +1,4 @@
-#Fri Jul 15 17:18:40 CST 2011
+#Fri Jul 22 18:04:39 CST 2011
 eclipse.preferences.version=1
 encoding//doc/file.txt=GBK
 encoding//doc/util.txt=GBK
@@ -43,7 +43,9 @@ encoding//src/imsto/app/store.py=utf-8
 encoding//src/imsto/app/tool.py=utf-8
 encoding//src/layout.tpl=UTF-8
 encoding//src/pomDown.py=utf-8
+encoding//src/shguo/CommonUtils.py=utf-8
 encoding//src/shguo/WebCrack.py=utf-8
+encoding//src/shguo/beautifulsoap/beautiful.py=utf-8
 encoding//src/shguo/pycurl/httptail.py=utf-8
 encoding//src/shguo/pycurl/httptail_2.py=utf-8
 encoding//src/shguo/redis/RedisTest.py=utf-8
